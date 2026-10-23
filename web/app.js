@@ -319,22 +319,24 @@ async function refreshAfterCategoryChange(message) {
 function bindCategoryActions() {
   $("#category-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     try {
       await api("/categories", jsonOptions("POST", { name: data.get("name") }));
-      event.currentTarget.reset();
+      form.reset();
       await refreshAfterCategoryChange("Category added.");
     } catch (error) { showNotice(error.message, true); }
   });
 
   $("#subcategory-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     try {
       await api("/subcategories", jsonOptions("POST", {
         name: data.get("name"), category_id: data.get("category_id"),
       }));
-      event.currentTarget.elements.name.value = "";
+      form.elements.name.value = "";
       await refreshAfterCategoryChange("Subcategory added.");
     } catch (error) { showNotice(error.message, true); }
   });
