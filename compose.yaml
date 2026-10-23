@@ -1,0 +1,20 @@
+services:
+  expense-tracker:
+    build: .
+    image: expense-tracker:local
+    container_name: expense-tracker
+    init: true
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      HOST: 0.0.0.0
+      PORT: "8000"
+      EXPENSE_DATA_DIR: /app/data
+    ports:
+      - "${EXPENSE_TRACKER_BIND:-127.0.0.1}:${EXPENSE_TRACKER_PORT:-8000}:8000"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /app/data
+        bind:
+          create_host_path: false

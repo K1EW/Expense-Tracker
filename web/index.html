@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f6f2" />
+    <title>Expense tracker</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#transactions" aria-label="Expense tracker home">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span>Expense tracker</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#transactions" data-page-link="transactions">Transactions</a>
+        <a href="#categories" data-page-link="categories">Categories</a>
+        <a href="#dashboard" data-page-link="dashboard">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <section id="transactions-page" class="page" aria-labelledby="transactions-title">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">YOUR MONEY, IN PLAIN VIEW</p>
+            <h1 id="transactions-title">Transactions</h1>
+            <p class="muted">Add an expense or review your recent activity.</p>
+          </div>
+        </div>
+
+        <section class="panel" aria-labelledby="add-transaction-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">QUICK ENTRY</p>
+              <h2 id="add-transaction-title">Add an expense</h2>
+            </div>
+          </div>
+          <form id="transaction-form" class="form-grid">
+            <label>
+              Date <span class="required">*</span>
+              <input id="transaction-date" name="date" type="date" required />
+            </label>
+            <label>
+              Amount <span class="required">*</span>
+              <input
+                name="amount"
+                type="number"
+                min="0"
+                step="any"
+                inputmode="decimal"
+                placeholder="0.00"
+                required
+              />
+            </label>
+            <label>
+              Category
+              <select id="transaction-category" name="category_id">
+                <option value="">Uncategorized</option>
+              </select>
+            </label>
+            <label>
+              Subcategory
+              <select id="transaction-subcategory" name="subcategory_id" disabled>
+                <option value="">No subcategory</option>
+              </select>
+            </label>
+            <label class="form-wide">
+              Note
+              <input name="note" type="text" maxlength="500" placeholder="What was it for?" />
+            </label>
+            <div class="form-actions form-wide">
+              <button class="button button-primary" type="submit">Add expense</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="transaction-list-title">
+          <div class="panel-heading list-heading">
+            <div>
+              <p class="eyebrow">ACTIVITY</p>
+              <h2 id="transaction-list-title">All transactions</h2>
+            </div>
+            <span id="transaction-count" class="muted small-text"></span>
+          </div>
+          <form id="transaction-filter" class="filter-row">
+            <label>
+              From
+              <input name="start_date" type="date" />
+            </label>
+            <label>
+              To
+              <input name="end_date" type="date" />
+            </label>
+            <button class="button button-secondary" type="submit">Filter dates</button>
+            <button id="clear-transaction-filter" class="button button-quiet" type="button">
+              Clear
+            </button>
+          </form>
+          <p class="helper-text">Date range includes both selected dates. Newest transactions appear first.</p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Subcategory</th>
+                  <th scope="col">Note</th>
+                  <th scope="col" class="amount-cell">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-body"></tbody>
+            </table>
+          </div>
+          <div id="transactions-empty" class="empty-state" hidden>
+            <span class="empty-icon" aria-hidden="true">＋</span>
+            <strong>No transactions found</strong>
+            <span>Try a different date range or add your first expense.</span>
+          </div>
+          <div class="pagination">
+            <span id="page-indicator" class="muted small-text"></span>
+            <div class="pagination-actions">
+              <button id="previous-page" class="button button-secondary" type="button">Previous</button>
+              <button id="next-page" class="button button-secondary" type="button">Next</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="categories-page" class="page" aria-labelledby="categories-title" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">KEEP THINGS ORGANIZED</p>
+            <h1 id="categories-title">Categories</h1>
+            <p class="muted">Manage the categories and subcategories used for expenses.</p>
+          </div>
+        </div>
+
+        <div class="management-grid">
+          <section class="panel" aria-labelledby="new-category-title">
+            <div class="panel-heading">
+              <div><p class="eyebrow">NEW GROUP</p><h2 id="new-category-title">Add category</h2></div>
+            </div>
+            <form id="category-form" class="stacked-form">
+              <label>Category name<input name="name" type="text" maxlength="100" required /></label>
+              <button class="button button-primary" type="submit">Add category</button>
+            </form>
+          </section>
+
+          <section class="panel" aria-labelledby="new-subcategory-title">
+            <div class="panel-heading">
+              <div><p class="eyebrow">MORE DETAIL</p><h2 id="new-subcategory-title">Add subcategory</h2></div>
+            </div>
+            <form id="subcategory-form" class="stacked-form">
+              <label>Subcategory name<input name="name" type="text" maxlength="100" required /></label>
+              <label>Parent category<select name="category_id" required></select></label>
+              <button class="button button-primary" type="submit">Add subcategory</button>
+            </form>
+          </section>
+        </div>
+
+        <section class="panel" aria-labelledby="manage-categories-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow">YOUR SETUP</p><h2 id="manage-categories-title">Manage categories</h2></div>
+          </div>
+          <div id="category-list" class="management-list"></div>
+          <div id="categories-empty" class="empty-state compact" hidden>
+            <strong>No categories yet</strong>
+            <span>Add a category above, or leave expenses uncategorized.</span>
+          </div>
+        </section>
+      </section>
+
+      <section id="dashboard-page" class="page" aria-labelledby="dashboard-title" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE</p>
+            <h1 id="dashboard-title">Expense summary</h1>
+            <p class="muted">See where your spending goes, grouped by category.</p>
+          </div>
+        </div>
+
+        <section class="panel" aria-labelledby="summary-period-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow">TIME PERIOD</p><h2 id="summary-period-title">Choose a period</h2></div>
+          </div>
+          <form id="dashboard-filter" class="filter-row dashboard-filter">
+            <label>
+              Show
+              <select name="period">
+                <option value="all">All time</option>
+                <option value="month">Specific month</option>
+                <option value="range">Date range</option>
+              </select>
+            </label>
+            <label id="dashboard-month-field" hidden>
+              Month
+              <input name="month" type="month" />
+            </label>
+            <label id="dashboard-start-field" hidden>
+              From
+              <input name="start_date" type="date" />
+            </label>
+            <label id="dashboard-end-field" hidden>
+              To
+              <input name="end_date" type="date" />
+            </label>
+            <button class="button button-primary" type="submit">Update summary</button>
+          </form>
+        </section>
+
+        <section class="summary-card" aria-label="Total expenses">
+          <div>
+            <span class="summary-label">Total expenses</span>
+            <strong id="summary-total" class="summary-total">0</strong>
+          </div>
+          <span id="summary-period-label" class="summary-period">All time</span>
+        </section>
+
+        <section class="panel" aria-labelledby="category-breakdown-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">BREAKDOWN</p>
+              <h2 id="category-breakdown-title">By category</h2>
+            </div>
+            <span class="helper-text">Select a category to see subcategory totals.</span>
+          </div>
+          <div id="dashboard-categories" class="breakdown-list"></div>
+          <div id="dashboard-empty" class="empty-state compact" hidden>
+            <strong>No expenses in this period</strong>
+            <span>Try a different time period or add a transaction.</span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="edit-dialog" class="edit-dialog">
+      <form id="edit-form" class="dialog-content">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">TRANSACTION</p><h2>Edit expense</h2></div>
+          <button id="close-edit" class="icon-button" type="button" aria-label="Close">×</button>
+        </div>
+        <label>Date <span class="required">*</span><input name="date" type="date" required /></label>
+        <label>Amount <span class="required">*</span>
+          <input name="amount" type="number" min="0" step="any" inputmode="decimal" required />
+        </label>
+        <label>Category<select name="category_id"></select></label>
+        <label>Subcategory<select name="subcategory_id" disabled></select></label>
+        <label>Note<input name="note" type="text" maxlength="500" /></label>
+        <div class="dialog-actions">
+          <button id="delete-transaction" class="button button-danger" type="button">Delete</button>
+          <div class="button-group">
+            <button id="cancel-edit" class="button button-secondary" type="button">Cancel</button>
+            <button class="button button-primary" type="submit">Save changes</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <footer class="site-footer"><span>Simple tracking, clearer spending.</span></footer>
+  </body>
+</html>
