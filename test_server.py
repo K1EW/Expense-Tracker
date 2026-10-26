@@ -162,6 +162,16 @@ class CSVStoreTests(unittest.TestCase):
         )
         self.assertNotIn(outside["id"], {row["id"] for row in results})
 
+    def test_transaction_queries_preserve_creation_order_for_same_date(self):
+        earlier = self.store.create_transaction(
+            {"date": "2026-10-26", "amount": "10.00"}
+        )
+        later = self.store.create_transaction({"date": "2026-10-26", "amount": "20.00"})
+
+        results = self.store.query_transactions({})
+
+        self.assertEqual([earlier["id"], later["id"]], [row["id"] for row in results])
+
     def test_transaction_amount_must_be_positive(self):
         for amount in (0, "-1.25"):
             with (

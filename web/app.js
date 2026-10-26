@@ -151,8 +151,13 @@ async function loadReferenceData() {
 }
 
 function filteredTransactions() {
+  // The CSV/API preserve insertion order, so later rows are newer transactions.
+  const creationOrder = new Map(
+    state.transactions.map((transaction, index) => [transaction.id, index]),
+  );
   return [...state.transactions].sort((left, right) =>
-    right.date.localeCompare(left.date) || right.id.localeCompare(left.id));
+    right.date.localeCompare(left.date)
+    || creationOrder.get(right.id) - creationOrder.get(left.id));
 }
 
 async function loadTransactions() {

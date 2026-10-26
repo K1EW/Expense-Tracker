@@ -123,7 +123,7 @@ Create a transaction:
 
 ## Web frontend
 
-The home page supports adding expenses, filtering the transaction list by an inclusive date range, and editing or deleting a transaction by selecting it. Transactions are shown newest first, with 20 per page. The Categories page manages categories and subcategories. The Dashboard supports all-time, month, or inclusive date-range summaries, with expandable category totals and an `Uncategorized` group. All amounts are treated as positive expenses.
+The home page supports adding expenses, filtering the transaction list by an inclusive date range, and editing or deleting a transaction by selecting it. Transactions are shown newest date first, with later-created transactions first when dates match, 20 per page. The Categories page manages categories and subcategories. The Dashboard supports all-time, month, or inclusive date-range summaries, with expandable category totals and an `Uncategorized` group. All amounts are treated as positive expenses.
 
 Successful creates return `201`; successful deletes return `204`. Errors return a JSON body such as `{"error":"..."}`. Invalid input returns `400`, and missing resources return `404`.
 
