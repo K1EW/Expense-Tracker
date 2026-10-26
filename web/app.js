@@ -191,10 +191,10 @@ function renderTransactions() {
   $("#transactions-body").innerHTML = visible.map((transaction) => `
     <tr tabindex="0" role="button" data-transaction-id="${escapeHTML(transaction.id)}" aria-label="Edit expense ${escapeHTML(displayDate(transaction.date))}, ${escapeHTML(formatAmount(transaction.amount))}">
       <td class="transaction-date">${escapeHTML(displayDate(transaction.date))}</td>
+      <td class="amount-cell transaction-amount">${escapeHTML(formatAmount(transaction.amount))}</td>
       <td><span class="category-pill">${escapeHTML(categoryName(transaction.category_id))}</span></td>
       <td>${escapeHTML(subcategoryName(transaction.subcategory_id))}</td>
       <td>${escapeHTML(transaction.note || "—")}</td>
-      <td class="amount-cell transaction-amount">${escapeHTML(formatAmount(transaction.amount))}</td>
     </tr>`).join("");
   $("#transactions-empty").hidden = transactions.length > 0;
   $("#transaction-count").textContent = `${transactions.length} ${transactions.length === 1 ? "expense" : "expenses"}`;
