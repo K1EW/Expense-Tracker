@@ -113,6 +113,41 @@ class CSVStoreTests(unittest.TestCase):
         self.assertEqual(category["id"], saved["category_id"])
         self.assertIsNone(saved["subcategory_id"])
 
+    def test_editing_only_transaction_subcategory_preserves_other_fields(self):
+        category = self.store.create_category({"name": "Food"})
+        old_subcategory = self.store.create_subcategory(
+            {"name": "Lunch", "category_id": category["id"]}
+        )
+        new_subcategory = self.store.create_subcategory(
+            {"name": "Dinner", "category_id": category["id"]}
+        )
+        transaction = self.store.create_transaction(
+            {
+                "date": "2026-10-26",
+                "amount": "42.50",
+                "category_id": category["id"],
+                "subcategory_id": old_subcategory["id"],
+                "note": "Meal",
+            }
+        )
+
+        self.store.update_transaction(
+            transaction["id"], {"subcategory_id": new_subcategory["id"]}
+        )
+
+        saved = self.store.get_row("transactions", transaction["id"])
+        self.assertEqual(
+            {
+                "id": transaction["id"],
+                "date": "2026-10-26",
+                "amount": "42.50",
+                "category_id": category["id"],
+                "subcategory_id": new_subcategory["id"],
+                "note": "Meal",
+            },
+            saved,
+        )
+
     def test_period_filter_is_inclusive(self):
         first = self.store.create_transaction({"date": "2026-01-01", "amount": 1})
         middle = self.store.create_transaction({"date": "2026-01-15", "amount": 2})

@@ -288,7 +288,9 @@ class CSVStore:
         self._validate_transaction_relations(
             updated["category_id"], updated["subcategory_id"]
         )
-        transactions.loc[transactions["id"] == entity_id, :] = updated
+        transaction_mask = transactions["id"] == entity_id
+        for field in TABLE_FIELDS["transactions"]:
+            transactions.loc[transaction_mask, field] = updated[field]
         self._write("transactions", transactions)
         return self._as_json(updated)
 
